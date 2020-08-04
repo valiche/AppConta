@@ -1,17 +1,14 @@
 package PrjContas;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AppMenu {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        Conta conta = null;
         int cod, op;
         float taxaP = 5, limite, valor;
         ContaPoupanca.setTaxa(taxaP);
-        ArrayList<Conta> contas = new ArrayList<>();
-        boolean busca = false;
+        GerenciarContas contas = new GerenciarContas(); // substitui: ArrayList<Conta> contas = new ArrayList<>();
 
         do {
             System.out.println(
@@ -22,74 +19,39 @@ public class AppMenu {
                 case 1:
                     System.out.println("Nova conta. Digite o número da conta corrente:");
                     cod = in.nextInt();
-                    conta = new ContaCorrente(cod);
-                    contas.add(conta);
+                    contas.novaConta(new ContaCorrente(cod)); // passou a ser no Gerenciar
                     break;
                 case 2:
                     System.out.println("Nova conta. Digite o número da conta poupança:");
                     cod = in.nextInt();
-                    conta = new ContaPoupanca(cod);
-                    contas.add(conta);
+                    contas.novaConta(new ContaPoupanca(cod)); // não necessita variável conta
                     break;
                 case 3:
                     System.out.println("Nova conta. Digite o número da conta especial:");
                     cod = in.nextInt();
                     System.out.println("Qual será o limite?");
                     limite = in.nextFloat();
-                    conta = new ContaEspecial(cod, limite);
-                    contas.add(conta);
+                    contas.novaConta(new ContaEspecial(cod, limite));
                     break;
                 case 4:
                     System.out.println("Digite o número da conta:");
                     cod = in.nextInt();
-                    busca = false;
-                    for (Conta contac : contas) {
-                        if (contac.getCod() == cod) {
-                            busca = true;
-                            System.out.println(contac.exibirDados());
-                            break;
-                        }
-                    }
-                    if (busca == false) { //ou if (!achou)
-                        System.out.println("Conta não encontrada.");
-                    }
+                    System.out.println(contas.getInfo(cod));
                     break;
-
                 case 5:
                     System.out.println("Digite o número da conta:");
                     cod = in.nextInt();
-                    busca = false;
-                    for (Conta contac : contas) {
-                        if (contac.getCod() == cod) {
-                            busca = true;
-                            System.out.printf("Saldo = %.2f | Selecione valor para saque:", contac.getSaldo());
-                            valor = in.nextFloat();
-                            contac.setSaque(valor);
-                            System.out.println("Saldo atual = " + contac.getSaldo());
-                            break;
-                        }
-                    }
-                    if (busca == false) { //ou if (!achou)
-                        System.out.println("Conta não encontrada.");
-                    }
+                    System.out.println("Valor saque:");
+                    valor = in.nextFloat();
+                    System.out.println(contas.efetSaque(cod, valor));
                     break;
                 case 6:
                     System.out.println("Digite o número da conta:");
                     cod = in.nextInt();
-                    busca = false;
-                    for (Conta contac : contas) {
-                        busca = true;
-                        if (contac.getCod() == cod) {
-                            System.out.printf("Saldo = %.2f | Qual o valor do depósito?", contac.getSaldo());
-                            valor = in.nextFloat();
-                            contac.setDeposito(valor);
-                            System.out.println("Saldo atual = " + contac.getSaldo());
-                            break;
-                        }
-                    }
-                    if (!busca) {
-                        System.out.println("Conta não encontrada.");
-                    }
+                    System.out.println("Valor depósito:");
+                    valor = in.nextFloat();
+                    System.out.println(contas.efetDeposito(cod, valor));
+    
                     break;
                 case 7:
                     System.out.println("Sessão encerrada!");
@@ -97,7 +59,6 @@ public class AppMenu {
                 default:
                     System.out.println("Opção inválida");
             }
-
         } while (op != 7);
         in.close();
     }
